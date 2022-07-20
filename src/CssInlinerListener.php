@@ -18,12 +18,12 @@ class CssInlinerListener
     {
         $message = $event->message;
 
-        // TODO check for these mime types
-        $properTypes = [
+        // TODO check for these mime types? and apply inliner to all parts of a multi-part message?
+        /*$properTypes = [
             'text/html',
             'multipart/alternative',
             'multipart/mixed',
-        ];
+        ];*/
 
         if ($message->getHtmlBody()) {
             $text = CssInliner::fromHtml($message->getHtmlBody())->inlineCss()->render();

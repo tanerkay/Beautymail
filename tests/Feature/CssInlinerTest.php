@@ -5,7 +5,6 @@ namespace Snowfire\Beautymail\Tests\Feature;
 use Illuminate\Log\Events\MessageLogged;
 use Illuminate\Mail\Message;
 use Illuminate\Support\Facades\Event;
-use Illuminate\Support\Facades\Log;
 use Snowfire\Beautymail\Tests\TestCase;
 use Snowfire\Beautymail\Beautymail;
 
