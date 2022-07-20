@@ -2,17 +2,12 @@
 
 namespace Snowfire\Beautymail;
 
+use Illuminate\Mail\Events\MessageSending;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 
 class BeautymailServiceProvider extends ServiceProvider
 {
-    /**
-     * Indicates if loading of the provider is deferred.
-     *
-     * @var bool
-     */
-    protected $defer = false;
-
     /**
      * Bootstrap the application events.
      *
@@ -21,20 +16,19 @@ class BeautymailServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->publishes([
-            __DIR__.'/../../config/settings.php' => config_path('beautymail.php'),
+            __DIR__.'/config/settings.php' => config_path('beautymail.php'),
         ], 'config');
 
         $this->publishes([
-            __DIR__.'/../../../public' => public_path('vendor/beautymail'),
+            __DIR__.'/../public' => public_path('vendor/beautymail'),
         ], 'public');
 
-        $this->loadViewsFrom(__DIR__.'/../../views', 'beautymail');
+        $this->loadViewsFrom(__DIR__.'/views', 'beautymail');
 
-        try {
-            $this->app['mailer']->getSwiftMailer()->registerPlugin(new CssInlinerPlugin());
-        } catch (\Exception $e) {
-            \Log::debug('Skipped registering SwiftMailer plugin: CssInlinerPlugin.');
-        }
+        Event::listen(
+            MessageSending::class,
+            CssInlinerListener::class
+        );
     }
 
     /**
@@ -44,9 +38,9 @@ class BeautymailServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->singleton('Snowfire\Beautymail\Beautymail',
-            function ($app) {
-                return new \Snowfire\Beautymail\Beautymail(
+        $this->app->singleton(Beautymail::class,
+            function () {
+                return new Beautymail(
                     array_merge(
                         config('beautymail.view'),
                         [

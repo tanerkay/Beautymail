@@ -9,10 +9,10 @@ class BeautymailFacade extends Facade
     /**
      * The name of the binding in the IoC container.
      *
-     * @return string
+     * @return class-string
      */
-    protected static function getFacadeAccessor()
+    protected static function getFacadeAccessor(): string
     {
-        return 'Snowfire\Beautymail\Beautymail';
+        return Beautymail::class;
     }
 }

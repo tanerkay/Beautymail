@@ -2,6 +2,7 @@
 
 namespace Snowfire\Beautymail;
 
+use Illuminate\Contracts\Mail\Mailable;
 use Illuminate\Contracts\Mail\Mailer;
 use Illuminate\Mail\PendingMail;
 
@@ -9,59 +10,45 @@ class Beautymail implements Mailer
 {
     /**
      * Contains settings for emails processed by Beautymail.
-     *
-     * @var
      */
-    private $settings;
+    private array $settings;
 
-    /**
-     * The mailer contract depended upon.
-     *
-     * @var \Illuminate\Contracts\Mail\Mailer
-     */
-    private $mailer;
+    private Mailer $mailer;
 
     /**
      * Initialise the settings and mailer.
-     *
-     * @param $settings
      */
-    public function __construct($settings)
+    public function __construct(array $settings = [])
     {
         $this->settings = $settings;
-        $this->mailer = app()->make('Illuminate\Contracts\Mail\Mailer');
+        $this->mailer = app(Mailer::class);
         $this->setLogoPath();
     }
 
-    public function to($users)
+    public function to($users): PendingMail
     {
         return (new PendingMail($this))->to($users);
     }
 
-    public function bcc($users)
+    public function bcc($users): PendingMail
     {
         return (new PendingMail($this))->bcc($users);
     }
-    
-    public function cc($users)
+
+    public function cc($users): PendingMail
     {
         return (new PendingMail($this))->cc($users);
     }
 
     /**
      * Retrieve the settings.
-     *
-     * @return mixed
      */
-    public function getData()
+    public function getData(): array
     {
         return $this->settings;
     }
-    
-    /**
-     * @return \Illuminate\Contracts\Mail\Mailer
-     */
-    public function getMailer()
+
+    public function getMailer(): Mailer
     {
         return $this->mailer;
     }
@@ -69,13 +56,13 @@ class Beautymail implements Mailer
     /**
      * Send a new message using a view.
      *
-     * @param string|array    $view
-     * @param array           $data
+     * @param Mailable|string|array $view
+     * @param array $data
      * @param \Closure|string $callback
      *
      * @return void
      */
-    public function send($view, array $data = [], $callback = null)
+    public function send($view, array $data = [], $callback = null): void
     {
         $data = array_merge($this->settings, $data);
 
@@ -85,8 +72,8 @@ class Beautymail implements Mailer
     /**
      * Send a new message using the a view via queue.
      *
-     * @param string|array    $view
-     * @param array           $data
+     * @param Mailable|string|array $view
+     * @param array $data
      * @param \Closure|string $callback
      *
      * @return void
