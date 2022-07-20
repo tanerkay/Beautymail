@@ -14,9 +14,18 @@
         "illuminate/mail": "^9.0",
         "pelago/emogrifier": "^5.0|^6.0"
     },
+    "require-dev": {
+        "orchestra/testbench": "^7.0",
+        "phpunit/phpunit": "^9.5"
+    },
     "autoload": {
         "psr-4": {
             "Snowfire\\Beautymail\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Snowfire\\Beautymail\\Tests\\": "tests/"
         }
     },
     "minimum-stability": "stable",
